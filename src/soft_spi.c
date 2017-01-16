@@ -30,37 +30,34 @@
 #define DAT_DOWN PORT(DAT_REG) &= ~(1<<DAT_PIN);
 #define DAT_UP   PORT(DAT_REG) |= 1<<DAT_PIN;
 
-void spi_init() {
+inline void spi_init() {
     // set both low
     PORT(CLK_REG) &= ~(1<<CLK_PIN);
     PORT(DAT_REG) &= ~(1<<DAT_PIN);
     // set both as output
-    DDR(CLK_REG) |= 1<<CLK_PIN;
-    DDR(DAT_REG) |= 1<<DAT_PIN;
+    DDR(CLK_REG) |= (1<<CLK_PIN);
+    DDR(DAT_REG) |= (1<<DAT_PIN);
 }
 
-void spi_send_bit(uint8_t bit) {
+inline void spi_send_bit(uint8_t bit) {
     CLK_DOWN
     if(bit){
         DAT_UP
     }
-    else {
-        DAT_DOWN
-    }
     _delay_us(1);
     CLK_UP
     _delay_us(1);
+    CLK_DOWN
     DAT_DOWN
-    CLK_DOWN // just to be shure
 }
 
-void spi_send_byte(uint8_t byte) {
+inline void spi_send_byte(uint8_t byte) {
     for(int8_t i = 7; i >= 0; i--){
         spi_send_bit((byte & (1<<i))>>i);
     }
 }
 
-void spi_send_buf(void *buf, uint16_t size) {
+inline void spi_send_buf(void *buf, uint16_t size) {
     uint8_t *byte_buf = (void*)buf;
     for(uint16_t i = 0; i < size; i++){
        spi_send_byte(byte_buf[i]);

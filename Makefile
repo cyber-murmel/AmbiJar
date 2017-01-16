@@ -59,9 +59,6 @@ build/main.elf: ${OBJECTS}
 	@echo
 	@avr-size --format=avr --mcu=${MCU} $@
 
-massprogram: all
-	python utilities/flasher.py "${AVRFLASH} -p ${MCU} -c ${AVRDUDE_PROGRAMMER} ${AVRFLAGS}"
-
 flash: program
 
 program: build/main.hex #main.eep
